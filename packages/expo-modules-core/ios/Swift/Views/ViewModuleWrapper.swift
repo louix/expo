@@ -82,7 +82,10 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
    */
   @objc
   public override func view() -> UIView! {
-    guard let view = wrappedModuleHolder.definition.viewManager?.createView() else {
+    guard let appContext = wrappedModuleHolder.appContext else {
+      fatalError(AppContextLostException().reason)
+    }
+    guard let view = wrappedModuleHolder.definition.viewManager?.createView(appContext: appContext) else {
       fatalError("Module `\(wrappedModuleHolder.name)` doesn't define the view manager nor view factory.")
     }
     return view
