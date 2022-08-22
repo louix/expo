@@ -14,21 +14,21 @@
 #include <stdbool.h>
 #endif
 
-// NOTE: The symbols exposed by this header are named with a `UEX` prefix rather than an `ABI47_0_0EX`
+// NOTE: The symbols exposed by this header are named with a `UEX` prefix rather than an `ABI45_0_0EX`
 //       prefix so that they are unaffected by the automated iOS versioning script when
-//       referenced in versioned Objective-C code. The ABI47_0_0EXGL C/C++ library is not versioned
+//       referenced in versioned Objective-C code. The ABI45_0_0EXGL C/C++ library is not versioned
 //       and there is only one copy of its code in the binary form of the Expo application.
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Identifies an ABI47_0_0EXGL context. No ABI47_0_0EXGL context has the id 0, so that can be
+// Identifies an ABI45_0_0EXGL context. No ABI47_0_0EXGL context has the id 0, so that can be
 // used as a 'null' value.
 typedef unsigned int UEXGLContextId;
 
-// Identifies an ABI47_0_0EXGL object. ABI47_0_0EXGL objects represent virtual mappings to underlying OpenGL objects.
-// No ABI47_0_0EXGL object has the id 0, so that can be used as a 'null' value.
+// Identifies an ABI45_0_0EXGL object. ABI47_0_0EXGL objects represent virtual mappings to underlying OpenGL objects.
+// No ABI45_0_0EXGL object has the id 0, so that can be used as a 'null' value.
 typedef unsigned int UEXGLObjectId;
 
 UEXGLContextId UEXGLContextCreate();
@@ -39,13 +39,13 @@ UEXGLContextId UEXGLContextCreate();
 #ifdef __APPLE__
 // Objective-C wrapper for UEXGLContextSetFlushMethod
 typedef void (^UEXGLFlushMethodBlock)(void);
-// [JS thread] Create an ABI47_0_0EXGL context and return its id number. Saves the
+// [JS thread] Create an ABI45_0_0EXGL context and return its id number. Saves the
 // JavaScript interface object (has a WebGLRenderingContext-style API) at
 // `global.__EXGLContexts[id]` in JavaScript.
 void UEXGLContextPrepare(void *runtime, UEXGLContextId exglCtxId, UEXGLFlushMethodBlock flushMethod);
 
 #else
-// [JS thread] Create an ABI47_0_0EXGL context and return its id number. Saves the
+// [JS thread] Create an ABI45_0_0EXGL context and return its id number. Saves the
 // JavaScript interface object (has a WebGLRenderingContext-style API) at
 // `global.__EXGLContexts[id]` in JavaScript.
 void UEXGLContextPrepare(void *runtime, UEXGLContextId exglCtxId, std::function<void(void)> flushMethod);
@@ -57,7 +57,7 @@ bool UEXGLContextNeedsRedraw(UEXGLContextId exglCtxId);
 // [GL thread] Tell cpp that we finished drawing to the surface
 void UEXGLContextDrawEnded(UEXGLContextId exglCtxId);
 
-// [Any thread] Release the resources for an ABI47_0_0EXGL context. The same id is never
+// [Any thread] Release the resources for an ABI45_0_0EXGL context. The same id is never
 // reused.
 void UEXGLContextDestroy(UEXGLContextId exglCtxId);
 
@@ -68,16 +68,16 @@ void UEXGLContextFlush(UEXGLContextId exglCtxId);
 // platform-specific extensions on the default framebuffer, such as MSAA.
 void UEXGLContextSetDefaultFramebuffer(UEXGLContextId exglCtxId, GLint framebuffer);
 
-// [Any thread] Create an ABI47_0_0EXGL object. Initially maps to the OpenGL object zero.
+// [Any thread] Create an ABI45_0_0EXGL object. Initially maps to the OpenGL object zero.
 UEXGLObjectId UEXGLContextCreateObject(UEXGLContextId exglCtxId);
 
-// [GL thread] Destroy an ABI47_0_0EXGL object.
+// [GL thread] Destroy an ABI45_0_0EXGL object.
 void UEXGLContextDestroyObject(UEXGLContextId exglCtxId, UEXGLObjectId exglObjId);
 
-// [GL thread] Set the underlying OpenGL object an ABI47_0_0EXGL object maps to.
+// [GL thread] Set the underlying OpenGL object an ABI45_0_0EXGL object maps to.
 void UEXGLContextMapObject(UEXGLContextId exglCtxId, UEXGLObjectId exglObjId, GLuint glObj);
 
-// [GL thread] Get the underlying OpenGL object an ABI47_0_0EXGL object maps to.
+// [GL thread] Get the underlying OpenGL object an ABI45_0_0EXGL object maps to.
 GLuint UEXGLContextGetObject(UEXGLContextId exglCtxId, UEXGLObjectId exglObjId);
 
 #ifdef __cplusplus

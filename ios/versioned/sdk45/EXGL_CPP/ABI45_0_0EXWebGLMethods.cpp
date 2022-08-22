@@ -1,15 +1,15 @@
-#include "ABI47_0_0EXWebGLMethods.h"
-#include "ABI47_0_0EXGLContextManager.h"
-#include "ABI47_0_0EXGLImageUtils.h"
-#include "ABI47_0_0EXJsiArgsTransform.h"
-#include "ABI47_0_0EXWebGLMethodsHelpers.h"
-#include "ABI47_0_0EXWebGLRenderer.h"
+#include "ABI45_0_0EXWebGLMethods.h"
+#include "ABI45_0_0EXGLContextManager.h"
+#include "ABI45_0_0EXGLImageUtils.h"
+#include "ABI45_0_0EXJsiArgsTransform.h"
+#include "ABI45_0_0EXWebGLMethodsHelpers.h"
+#include "ABI45_0_0EXWebGLRenderer.h"
 
 #include <algorithm>
 
 #define ARG(index, type)                                   \
   (argc > index ? unpackArg<type>(runtime, jsArgv + index) \
-                : throw std::runtime_error("ABI47_0_0EXGL: Too few arguments"))
+                : throw std::runtime_error("ABI45_0_0EXGL: Too few arguments"))
 
 #define CTX()                                \
   auto result = getContext(runtime, jsThis); \
@@ -34,13 +34,13 @@
     return exglUnimplemented(#name); \
   }
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 namespace method {
 
-ABI47_0_0EXGLContextWithLock getContext(jsi::Runtime &runtime, const jsi::Value &jsThis) {
+ABI45_0_0EXGLContextWithLock getContext(jsi::Runtime &runtime, const jsi::Value &jsThis) {
   double exglCtxId = jsThis.asObject(runtime).getProperty(runtime, "contextId").asNumber();
-  return ABI47_0_0EXGLContextGet(static_cast<UEXGLContextId>(exglCtxId));
+  return ABI45_0_0EXGLContextGet(static_cast<UEXGLContextId>(exglCtxId));
 }
 
 // This listing follows the order in
@@ -204,7 +204,7 @@ NATIVE_METHOD(getParameter) {
       for (const auto &pair : ctx->objects) {
         if (static_cast<int>(pair.second) == glInt) {
           return createWebGLObject(
-              runtime, ABI47_0_0EXWebGLClass::WebGLBuffer, {static_cast<double>(pair.first)});
+              runtime, ABI45_0_0EXWebGLClass::WebGLBuffer, {static_cast<double>(pair.first)});
         }
       }
       return nullptr;
@@ -216,7 +216,7 @@ NATIVE_METHOD(getParameter) {
       for (const auto &pair : ctx->objects) {
         if (static_cast<int>(pair.second) == glInt) {
           return createWebGLObject(
-              runtime, ABI47_0_0EXWebGLClass::WebGLProgram, {static_cast<double>(pair.first)});
+              runtime, ABI45_0_0EXWebGLClass::WebGLProgram, {static_cast<double>(pair.first)});
         }
       }
       return nullptr;
@@ -238,7 +238,7 @@ NATIVE_METHOD(getParameter) {
     case GL_UNIFORM_BUFFER_BINDING:
     case GL_VERTEX_ARRAY_BINDING:
       throw std::runtime_error(
-          "ABI47_0_0EXGL: getParameter() doesn't support gl." + std::to_string(pname) + " yet!");
+          "ABI45_0_0EXGL: getParameter() doesn't support gl." + std::to_string(pname) + " yet!");
 
       // int
     default: {
@@ -277,7 +277,7 @@ NATIVE_METHOD(pixelStorei) {
       break;
     }
     default:
-      jsConsoleLog(runtime, { jsi::String::createFromUtf8(runtime, "ABI47_0_0EXGL: gl.pixelStorei() doesn't support this parameter yet!") });
+      jsConsoleLog(runtime, { jsi::String::createFromUtf8(runtime, "ABI45_0_0EXGL: gl.pixelStorei() doesn't support this parameter yet!") });
   }
   return nullptr;
 }
@@ -304,7 +304,7 @@ SIMPLE_NATIVE_METHOD(stencilOpSeparate, glStencilOpSeparate); // face, fail, zfa
 NATIVE_METHOD(bindBuffer) {
   CTX();
   auto target = ARG(0, GLenum);
-  auto buffer = ARG(1, ABI47_0_0EXWebGLClass);
+  auto buffer = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBindBuffer(target, ctx->lookupObject(buffer)); });
   return nullptr;
 }
@@ -344,12 +344,12 @@ NATIVE_METHOD(bufferSubData) {
 
 NATIVE_METHOD(createBuffer) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenBuffers, ABI47_0_0EXWebGLClass::WebGLBuffer);
+  return exglGenObject(ctx, runtime, glGenBuffers, ABI45_0_0EXWebGLClass::WebGLBuffer);
 }
 
 NATIVE_METHOD(deleteBuffer) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteBuffers);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteBuffers);
 }
 
 NATIVE_METHOD(getBufferParameter) {
@@ -363,7 +363,7 @@ NATIVE_METHOD(getBufferParameter) {
 
 NATIVE_METHOD(isBuffer) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsBuffer);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsBuffer);
 }
 
 // Buffers (WebGL2)
@@ -381,7 +381,7 @@ UNIMPL_NATIVE_METHOD(getBufferSubData);
 NATIVE_METHOD(bindFramebuffer) {
   CTX();
   auto target = ARG(0, GLenum);
-  auto framebuffer = ARG(1, ABI47_0_0EXWebGLClass);
+  auto framebuffer = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] {
     glBindFramebuffer(
         target, framebuffer == 0 ? ctx->defaultFramebuffer : ctx->lookupObject(framebuffer));
@@ -399,12 +399,12 @@ NATIVE_METHOD(checkFramebufferStatus) {
 
 NATIVE_METHOD(createFramebuffer) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenFramebuffers, ABI47_0_0EXWebGLClass::WebGLFramebuffer);
+  return exglGenObject(ctx, runtime, glGenFramebuffers, ABI45_0_0EXWebGLClass::WebGLFramebuffer);
 }
 
 NATIVE_METHOD(deleteFramebuffer) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteFramebuffers);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteFramebuffers);
 }
 
 NATIVE_METHOD(framebufferRenderbuffer) {
@@ -412,7 +412,7 @@ NATIVE_METHOD(framebufferRenderbuffer) {
   auto target = ARG(0, GLenum);
   auto attachment = ARG(1, GLenum);
   auto renderbuffertarget = ARG(2, GLenum);
-  auto fRenderbuffer = ARG(3, ABI47_0_0EXWebGLClass);
+  auto fRenderbuffer = ARG(3, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] {
     GLuint renderbuffer = ctx->lookupObject(fRenderbuffer);
     glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
@@ -425,7 +425,7 @@ NATIVE_METHOD(framebufferTexture2D, 5) {
   auto target = ARG(0, GLenum);
   auto attachment = ARG(1, GLenum);
   auto textarget = ARG(2, GLenum);
-  auto fTexture = ARG(3, ABI47_0_0EXWebGLClass);
+  auto fTexture = ARG(3, ABI45_0_0EXWebGLClass);
   auto level = ARG(4, GLint);
   ctx->addToNextBatch([=] {
     glFramebufferTexture2D(target, attachment, textarget, ctx->lookupObject(fTexture), level);
@@ -437,7 +437,7 @@ UNIMPL_NATIVE_METHOD(getFramebufferAttachmentParameter)
 
 NATIVE_METHOD(isFramebuffer) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsFramebuffer);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsFramebuffer);
 }
 
 NATIVE_METHOD(readPixels) {
@@ -469,7 +469,7 @@ NATIVE_METHOD(framebufferTextureLayer) {
   CTX();
   auto target = ARG(0, GLenum);
   auto attachment = ARG(1, GLenum);
-  auto texture = ARG(2, ABI47_0_0EXWebGLClass);
+  auto texture = ARG(2, ABI45_0_0EXWebGLClass);
   auto level = ARG(3, GLint);
   auto layer = ARG(4, GLint);
   ctx->addToNextBatch([=] {
@@ -520,26 +520,26 @@ SIMPLE_NATIVE_METHOD(readBuffer, glReadBuffer); // mode
 NATIVE_METHOD(bindRenderbuffer) {
   CTX();
   auto target = ARG(0, GLenum);
-  auto fRenderbuffer = ARG(1, ABI47_0_0EXWebGLClass);
+  auto fRenderbuffer = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBindRenderbuffer(target, ctx->lookupObject(fRenderbuffer)); });
   return nullptr;
 }
 
 NATIVE_METHOD(createRenderbuffer) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenRenderbuffers, ABI47_0_0EXWebGLClass::WebGLRenderbuffer);
+  return exglGenObject(ctx, runtime, glGenRenderbuffers, ABI45_0_0EXWebGLClass::WebGLRenderbuffer);
 }
 
 NATIVE_METHOD(deleteRenderbuffer) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteRenderbuffers);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteRenderbuffers);
 }
 
 UNIMPL_NATIVE_METHOD(getRenderbufferParameter)
 
 NATIVE_METHOD(isRenderbuffer) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsRenderbuffer);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsRenderbuffer);
 }
 
 NATIVE_METHOD(renderbufferStorage) {
@@ -585,7 +585,7 @@ UNIMPL_NATIVE_METHOD(renderbufferStorageMultisample)
 NATIVE_METHOD(bindTexture) {
   CTX();
   auto target = ARG(0, GLenum);
-  auto texture = ARG(1, ABI47_0_0EXWebGLClass);
+  auto texture = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBindTexture(target, ctx->lookupObject(texture)); });
   return nullptr;
 }
@@ -604,12 +604,12 @@ SIMPLE_NATIVE_METHOD(
 
 NATIVE_METHOD(createTexture) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenTextures, ABI47_0_0EXWebGLClass::WebGLTexture);
+  return exglGenObject(ctx, runtime, glGenTextures, ABI45_0_0EXWebGLClass::WebGLTexture);
 }
 
 NATIVE_METHOD(deleteTexture) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteTextures);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteTextures);
 }
 
 SIMPLE_NATIVE_METHOD(generateMipmap, glGenerateMipmap) // target
@@ -618,7 +618,7 @@ UNIMPL_NATIVE_METHOD(getTexParameter)
 
 NATIVE_METHOD(isTexture) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsTexture);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsTexture);
 }
 
 NATIVE_METHOD(texImage2D, 6) {
@@ -672,7 +672,7 @@ NATIVE_METHOD(texImage2D, 6) {
       glTexImage2D(target, level, internalformat, width, height, border, format, type, image.get());
     });
   } else {
-    throw std::runtime_error("ABI47_0_0EXGL: Invalid number of arguments to gl.texImage2D()!");
+    throw std::runtime_error("ABI45_0_0EXGL: Invalid number of arguments to gl.texImage2D()!");
   }
   return nullptr;
 }
@@ -729,7 +729,7 @@ NATIVE_METHOD(texSubImage2D, 6) {
       glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, image.get());
     });
   } else {
-    throw std::runtime_error("ABI47_0_0EXGL: Invalid number of arguments to gl.texSubImage2D()!");
+    throw std::runtime_error("ABI45_0_0EXGL: Invalid number of arguments to gl.texSubImage2D()!");
   }
   return nullptr;
 }
@@ -874,8 +874,8 @@ UNIMPL_NATIVE_METHOD(compressedTexSubImage3D)
 
 NATIVE_METHOD(attachShader) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
-  auto shader = ARG(1, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
+  auto shader = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch(
       [=] { glAttachShader(ctx->lookupObject(program), ctx->lookupObject(shader)); });
   return nullptr;
@@ -883,7 +883,7 @@ NATIVE_METHOD(attachShader) {
 
 NATIVE_METHOD(bindAttribLocation) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto index = ARG(1, GLuint);
   auto name = ARG(2, std::string);
   ctx->addToNextBatch([=, name{std::move(name)}] {
@@ -894,14 +894,14 @@ NATIVE_METHOD(bindAttribLocation) {
 
 NATIVE_METHOD(compileShader) {
   CTX();
-  auto shader = ARG(0, ABI47_0_0EXWebGLClass);
+  auto shader = ARG(0, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glCompileShader(ctx->lookupObject(shader)); });
   return nullptr;
 }
 
 NATIVE_METHOD(createProgram) {
   CTX();
-  return exglCreateObject(ctx, runtime, glCreateProgram, ABI47_0_0EXWebGLClass::WebGLProgram);
+  return exglCreateObject(ctx, runtime, glCreateProgram, ABI45_0_0EXWebGLClass::WebGLProgram);
 }
 
 NATIVE_METHOD(createShader) {
@@ -909,7 +909,7 @@ NATIVE_METHOD(createShader) {
   auto type = ARG(0, GLenum);
   if (type == GL_VERTEX_SHADER || type == GL_FRAGMENT_SHADER) {
     return exglCreateObject(
-        ctx, runtime, std::bind(glCreateShader, type), ABI47_0_0EXWebGLClass::WebGLShader);
+        ctx, runtime, std::bind(glCreateShader, type), ABI45_0_0EXWebGLClass::WebGLShader);
   } else {
     throw std::runtime_error("unknown shader type passed to function");
   }
@@ -917,18 +917,18 @@ NATIVE_METHOD(createShader) {
 
 NATIVE_METHOD(deleteProgram) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteProgram);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteProgram);
 }
 
 NATIVE_METHOD(deleteShader) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteShader);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteShader);
 }
 
 NATIVE_METHOD(detachShader) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
-  auto shader = ARG(1, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
+  auto shader = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch(
       [=] { glDetachShader(ctx->lookupObject(program), ctx->lookupObject(shader)); });
   return nullptr;
@@ -936,7 +936,7 @@ NATIVE_METHOD(detachShader) {
 
 NATIVE_METHOD(getAttachedShaders) {
   CTX();
-  auto fProgram = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fProgram = ARG(0, ABI45_0_0EXWebGLClass);
 
   GLint count;
   std::vector<GLuint> glResults;
@@ -957,20 +957,20 @@ NATIVE_METHOD(getAttachedShaders) {
     }
     if (exglObjId == 0) {
       throw std::runtime_error(
-          "ABI47_0_0EXGL: Internal error: couldn't find UEXGLObjectId "
+          "ABI45_0_0EXGL: Internal error: couldn't find UEXGLObjectId "
           "associated with shader in getAttachedShaders()!");
     }
     jsResults.setValueAtIndex(
         runtime,
         i,
-        createWebGLObject(runtime, ABI47_0_0EXWebGLClass::WebGLShader, {static_cast<double>(exglObjId)}));
+        createWebGLObject(runtime, ABI45_0_0EXWebGLClass::WebGLShader, {static_cast<double>(exglObjId)}));
   }
   return jsResults;
 }
 
 NATIVE_METHOD(getProgramParameter) {
   CTX();
-  auto fProgram = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fProgram = ARG(0, ABI45_0_0EXWebGLClass);
   auto pname = ARG(1, GLenum);
   GLint glResult;
   ctx->addBlockingToNextBatch(
@@ -984,7 +984,7 @@ NATIVE_METHOD(getProgramParameter) {
 
 NATIVE_METHOD(getShaderParameter) {
   CTX();
-  auto fShader = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fShader = ARG(0, ABI45_0_0EXWebGLClass);
   auto pname = ARG(1, GLenum);
   GLint glResult;
   ctx->addBlockingToNextBatch([&] { glGetShaderiv(ctx->lookupObject(fShader), pname, &glResult); });
@@ -1005,7 +1005,7 @@ NATIVE_METHOD(getShaderPrecisionFormat) {
       [&] { glGetShaderPrecisionFormat(shaderType, precisionType, range, &precision); });
 
   jsi::Object jsResult =
-      createWebGLObject(runtime, ABI47_0_0EXWebGLClass::WebGLShaderPrecisionFormat, {}).asObject(runtime);
+      createWebGLObject(runtime, ABI45_0_0EXWebGLClass::WebGLShaderPrecisionFormat, {}).asObject(runtime);
   jsResult.setProperty(runtime, "rangeMin", jsi::Value(range[0]));
   jsResult.setProperty(runtime, "rangeMax", jsi::Value(range[1]));
   jsResult.setProperty(runtime, "precision", jsi::Value(precision));
@@ -1014,7 +1014,7 @@ NATIVE_METHOD(getShaderPrecisionFormat) {
 
 NATIVE_METHOD(getProgramInfoLog) {
   CTX();
-  auto fObj = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fObj = ARG(0, ABI45_0_0EXWebGLClass);
   std::string str;
   ctx->addBlockingToNextBatch([&] {
     GLuint obj = ctx->lookupObject(fObj);
@@ -1028,7 +1028,7 @@ NATIVE_METHOD(getProgramInfoLog) {
 
 NATIVE_METHOD(getShaderInfoLog) {
   CTX();
-  auto fObj = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fObj = ARG(0, ABI45_0_0EXWebGLClass);
   std::string str;
   ctx->addBlockingToNextBatch([&] {
     GLuint obj = ctx->lookupObject(fObj);
@@ -1042,7 +1042,7 @@ NATIVE_METHOD(getShaderInfoLog) {
 
 NATIVE_METHOD(getShaderSource) {
   CTX();
-  auto fObj = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fObj = ARG(0, ABI45_0_0EXWebGLClass);
   std::string str;
   ctx->addBlockingToNextBatch([&] {
     GLuint obj = ctx->lookupObject(fObj);
@@ -1056,24 +1056,24 @@ NATIVE_METHOD(getShaderSource) {
 
 NATIVE_METHOD(isShader) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsShader);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsShader);
 }
 
 NATIVE_METHOD(isProgram) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsProgram);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsProgram);
 }
 
 NATIVE_METHOD(linkProgram) {
   CTX();
-  auto fProgram = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fProgram = ARG(0, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glLinkProgram(ctx->lookupObject(fProgram)); });
   return nullptr;
 }
 
 NATIVE_METHOD(shaderSource) {
   CTX();
-  auto fShader = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fShader = ARG(0, ABI45_0_0EXWebGLClass);
   auto str = ARG(1, std::string);
   ctx->addToNextBatch([=, str{std::move(str)}] {
     const char *cstr = str.c_str();
@@ -1084,14 +1084,14 @@ NATIVE_METHOD(shaderSource) {
 
 NATIVE_METHOD(useProgram) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glUseProgram(ctx->lookupObject(program)); });
   return nullptr;
 }
 
 NATIVE_METHOD(validateProgram) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glValidateProgram(ctx->lookupObject(program)); });
   return nullptr;
 }
@@ -1100,7 +1100,7 @@ NATIVE_METHOD(validateProgram) {
 
 NATIVE_METHOD(getFragDataLocation) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto name = ARG(1, std::string);
   GLint location;
   ctx->addBlockingToNextBatch(
@@ -1120,7 +1120,7 @@ NATIVE_METHOD(getActiveAttrib) {
   return exglGetActiveInfo(
       ctx,
       runtime,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLuint),
       GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,
       glGetActiveAttrib);
@@ -1131,7 +1131,7 @@ NATIVE_METHOD(getActiveUniform) {
   return exglGetActiveInfo(
       ctx,
       runtime,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLuint),
       GL_ACTIVE_UNIFORM_MAX_LENGTH,
       glGetActiveUniform);
@@ -1139,7 +1139,7 @@ NATIVE_METHOD(getActiveUniform) {
 
 NATIVE_METHOD(getAttribLocation) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto name = ARG(1, std::string);
   GLint location;
   ctx->addBlockingToNextBatch(
@@ -1151,14 +1151,14 @@ UNIMPL_NATIVE_METHOD(getUniform)
 
 NATIVE_METHOD(getUniformLocation) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto name = ARG(1, std::string);
   GLint location;
   ctx->addBlockingToNextBatch(
       [&] { location = glGetUniformLocation(ctx->lookupObject(program), name.c_str()); });
   return location == -1
       ? jsi::Value::null()
-      : createWebGLObject(runtime, ABI47_0_0EXWebGLClass::WebGLUniformLocation, {location});
+      : createWebGLObject(runtime, ABI45_0_0EXWebGLClass::WebGLUniformLocation, {location});
 }
 
 UNIMPL_NATIVE_METHOD(getVertexAttrib)
@@ -1167,7 +1167,7 @@ UNIMPL_NATIVE_METHOD(getVertexAttribOffset)
 
 NATIVE_METHOD(uniform1f) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLfloat);
   ctx->addToNextBatch([uniform, x]() { glUniform1f(uniform, x); });
   return nullptr;
@@ -1175,7 +1175,7 @@ NATIVE_METHOD(uniform1f) {
 
 NATIVE_METHOD(uniform2f) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLfloat);
   auto y = ARG(2, GLfloat);
   ctx->addToNextBatch([uniform, x, y]() { glUniform2f(uniform, x, y); });
@@ -1184,7 +1184,7 @@ NATIVE_METHOD(uniform2f) {
 
 NATIVE_METHOD(uniform3f) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLfloat);
   auto y = ARG(2, GLfloat);
   auto z = ARG(3, GLfloat);
@@ -1194,7 +1194,7 @@ NATIVE_METHOD(uniform3f) {
 
 NATIVE_METHOD(uniform4f) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLfloat);
   auto y = ARG(2, GLfloat);
   auto z = ARG(3, GLfloat);
@@ -1205,7 +1205,7 @@ NATIVE_METHOD(uniform4f) {
 
 NATIVE_METHOD(uniform1i) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLint);
   ctx->addToNextBatch([uniform, x]() { glUniform1i(uniform, x); });
   return nullptr;
@@ -1213,7 +1213,7 @@ NATIVE_METHOD(uniform1i) {
 
 NATIVE_METHOD(uniform2i) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLint);
   auto y = ARG(2, GLint);
   ctx->addToNextBatch([uniform, x, y]() { glUniform2i(uniform, x, y); });
@@ -1222,7 +1222,7 @@ NATIVE_METHOD(uniform2i) {
 
 NATIVE_METHOD(uniform3i) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLint);
   auto y = ARG(2, GLint);
   auto z = ARG(3, GLint);
@@ -1232,7 +1232,7 @@ NATIVE_METHOD(uniform3i) {
 
 NATIVE_METHOD(uniform4i) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLint);
   auto y = ARG(2, GLint);
   auto z = ARG(3, GLint);
@@ -1243,42 +1243,42 @@ NATIVE_METHOD(uniform4i) {
 
 NATIVE_METHOD(uniform1fv) {
   CTX();
-  return exglUniformv(ctx, glUniform1fv, ARG(0, ABI47_0_0EXWebGLClass), 1, ARG(1, std::vector<float>));
+  return exglUniformv(ctx, glUniform1fv, ARG(0, ABI45_0_0EXWebGLClass), 1, ARG(1, std::vector<float>));
 };
 
 NATIVE_METHOD(uniform2fv) {
   CTX();
-  return exglUniformv(ctx, glUniform2fv, ARG(0, ABI47_0_0EXWebGLClass), 2, ARG(1, std::vector<float>));
+  return exglUniformv(ctx, glUniform2fv, ARG(0, ABI45_0_0EXWebGLClass), 2, ARG(1, std::vector<float>));
 };
 
 NATIVE_METHOD(uniform3fv) {
   CTX();
-  return exglUniformv(ctx, glUniform3fv, ARG(0, ABI47_0_0EXWebGLClass), 3, ARG(1, std::vector<float>));
+  return exglUniformv(ctx, glUniform3fv, ARG(0, ABI45_0_0EXWebGLClass), 3, ARG(1, std::vector<float>));
 };
 
 NATIVE_METHOD(uniform4fv) {
   CTX();
-  return exglUniformv(ctx, glUniform4fv, ARG(0, ABI47_0_0EXWebGLClass), 4, ARG(1, std::vector<float>));
+  return exglUniformv(ctx, glUniform4fv, ARG(0, ABI45_0_0EXWebGLClass), 4, ARG(1, std::vector<float>));
 };
 
 NATIVE_METHOD(uniform1iv) {
   CTX();
-  return exglUniformv(ctx, glUniform1iv, ARG(0, ABI47_0_0EXWebGLClass), 1, ARG(1, std::vector<int32_t>));
+  return exglUniformv(ctx, glUniform1iv, ARG(0, ABI45_0_0EXWebGLClass), 1, ARG(1, std::vector<int32_t>));
 };
 
 NATIVE_METHOD(uniform2iv) {
   CTX();
-  return exglUniformv(ctx, glUniform2iv, ARG(0, ABI47_0_0EXWebGLClass), 2, ARG(1, std::vector<int32_t>));
+  return exglUniformv(ctx, glUniform2iv, ARG(0, ABI45_0_0EXWebGLClass), 2, ARG(1, std::vector<int32_t>));
 };
 
 NATIVE_METHOD(uniform3iv) {
   CTX();
-  return exglUniformv(ctx, glUniform3iv, ARG(0, ABI47_0_0EXWebGLClass), 3, ARG(1, std::vector<int32_t>));
+  return exglUniformv(ctx, glUniform3iv, ARG(0, ABI45_0_0EXWebGLClass), 3, ARG(1, std::vector<int32_t>));
 };
 
 NATIVE_METHOD(uniform4iv) {
   CTX();
-  return exglUniformv(ctx, glUniform4iv, ARG(0, ABI47_0_0EXWebGLClass), 4, ARG(1, std::vector<int32_t>));
+  return exglUniformv(ctx, glUniform4iv, ARG(0, ABI45_0_0EXWebGLClass), 4, ARG(1, std::vector<int32_t>));
 };
 
 NATIVE_METHOD(uniformMatrix2fv) {
@@ -1286,7 +1286,7 @@ NATIVE_METHOD(uniformMatrix2fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix2fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       4,
       ARG(2, std::vector<float>));
@@ -1297,7 +1297,7 @@ NATIVE_METHOD(uniformMatrix3fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix3fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       9,
       ARG(2, std::vector<float>));
@@ -1308,7 +1308,7 @@ NATIVE_METHOD(uniformMatrix4fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix4fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       16,
       ARG(2, std::vector<float>));
@@ -1317,25 +1317,25 @@ NATIVE_METHOD(uniformMatrix4fv) {
 NATIVE_METHOD(vertexAttrib1fv) {
   CTX();
   return exglVertexAttribv(
-      ctx, glVertexAttrib1fv, ARG(0, ABI47_0_0EXWebGLClass), ARG(1, std::vector<float>));
+      ctx, glVertexAttrib1fv, ARG(0, ABI45_0_0EXWebGLClass), ARG(1, std::vector<float>));
 }
 
 NATIVE_METHOD(vertexAttrib2fv) {
   CTX();
   return exglVertexAttribv(
-      ctx, glVertexAttrib2fv, ARG(0, ABI47_0_0EXWebGLClass), ARG(1, std::vector<float>));
+      ctx, glVertexAttrib2fv, ARG(0, ABI45_0_0EXWebGLClass), ARG(1, std::vector<float>));
 }
 
 NATIVE_METHOD(vertexAttrib3fv) {
   CTX();
   return exglVertexAttribv(
-      ctx, glVertexAttrib3fv, ARG(0, ABI47_0_0EXWebGLClass), ARG(1, std::vector<float>));
+      ctx, glVertexAttrib3fv, ARG(0, ABI45_0_0EXWebGLClass), ARG(1, std::vector<float>));
 }
 
 NATIVE_METHOD(vertexAttrib4fv) {
   CTX();
   return exglVertexAttribv(
-      ctx, glVertexAttrib4fv, ARG(0, ABI47_0_0EXWebGLClass), ARG(1, std::vector<float>));
+      ctx, glVertexAttrib4fv, ARG(0, ABI45_0_0EXWebGLClass), ARG(1, std::vector<float>));
 }
 
 SIMPLE_NATIVE_METHOD(vertexAttrib1f, glVertexAttrib1f); // index, x
@@ -1352,7 +1352,7 @@ SIMPLE_NATIVE_METHOD(
 
 NATIVE_METHOD(uniform1ui) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLuint);
   ctx->addToNextBatch([uniform, x]() { glUniform1ui(uniform, x); });
   return nullptr;
@@ -1360,7 +1360,7 @@ NATIVE_METHOD(uniform1ui) {
 
 NATIVE_METHOD(uniform2ui) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLuint);
   auto y = ARG(2, GLuint);
   ctx->addToNextBatch([uniform, x, y]() { glUniform2ui(uniform, x, y); });
@@ -1369,7 +1369,7 @@ NATIVE_METHOD(uniform2ui) {
 
 NATIVE_METHOD(uniform3ui) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLuint);
   auto y = ARG(2, GLuint);
   auto z = ARG(3, GLuint);
@@ -1379,7 +1379,7 @@ NATIVE_METHOD(uniform3ui) {
 
 NATIVE_METHOD(uniform4ui) {
   CTX();
-  auto uniform = ARG(0, ABI47_0_0EXWebGLClass);
+  auto uniform = ARG(0, ABI45_0_0EXWebGLClass);
   auto x = ARG(1, GLuint);
   auto y = ARG(2, GLuint);
   auto z = ARG(3, GLuint);
@@ -1390,22 +1390,22 @@ NATIVE_METHOD(uniform4ui) {
 
 NATIVE_METHOD(uniform1uiv) {
   CTX();
-  return exglUniformv(ctx, glUniform1uiv, ARG(0, ABI47_0_0EXWebGLClass), 1, ARG(1, std::vector<uint32_t>));
+  return exglUniformv(ctx, glUniform1uiv, ARG(0, ABI45_0_0EXWebGLClass), 1, ARG(1, std::vector<uint32_t>));
 };
 
 NATIVE_METHOD(uniform2uiv) {
   CTX();
-  return exglUniformv(ctx, glUniform2uiv, ARG(0, ABI47_0_0EXWebGLClass), 2, ARG(1, std::vector<uint32_t>));
+  return exglUniformv(ctx, glUniform2uiv, ARG(0, ABI45_0_0EXWebGLClass), 2, ARG(1, std::vector<uint32_t>));
 };
 
 NATIVE_METHOD(uniform3uiv) {
   CTX();
-  return exglUniformv(ctx, glUniform3uiv, ARG(0, ABI47_0_0EXWebGLClass), 3, ARG(1, std::vector<uint32_t>));
+  return exglUniformv(ctx, glUniform3uiv, ARG(0, ABI45_0_0EXWebGLClass), 3, ARG(1, std::vector<uint32_t>));
 };
 
 NATIVE_METHOD(uniform4uiv) {
   CTX();
-  return exglUniformv(ctx, glUniform4uiv, ARG(0, ABI47_0_0EXWebGLClass), 4, ARG(1, std::vector<uint32_t>));
+  return exglUniformv(ctx, glUniform4uiv, ARG(0, ABI45_0_0EXWebGLClass), 4, ARG(1, std::vector<uint32_t>));
 };
 
 NATIVE_METHOD(uniformMatrix3x2fv) {
@@ -1413,7 +1413,7 @@ NATIVE_METHOD(uniformMatrix3x2fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix3x2fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       6,
       ARG(2, std::vector<float>));
@@ -1424,7 +1424,7 @@ NATIVE_METHOD(uniformMatrix4x2fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix4x2fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       8,
       ARG(2, std::vector<float>));
@@ -1435,7 +1435,7 @@ NATIVE_METHOD(uniformMatrix2x3fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix2x3fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       6,
       ARG(2, std::vector<float>));
@@ -1446,7 +1446,7 @@ NATIVE_METHOD(uniformMatrix4x3fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix4x3fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       12,
       ARG(2, std::vector<float>));
@@ -1457,7 +1457,7 @@ NATIVE_METHOD(uniformMatrix2x4fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix2x4fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       8,
       ARG(2, std::vector<float>));
@@ -1468,7 +1468,7 @@ NATIVE_METHOD(uniformMatrix3x4fv) {
   return exglUniformMatrixv(
       ctx,
       glUniformMatrix3x4fv,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLboolean),
       12,
       ARG(2, std::vector<float>));
@@ -1566,23 +1566,23 @@ SIMPLE_NATIVE_METHOD(clearBufferfi, glClearBufferfi); // buffer, drawbuffer, dep
 
 NATIVE_METHOD(createQuery) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenQueries, ABI47_0_0EXWebGLClass::WebGLQuery);
+  return exglGenObject(ctx, runtime, glGenQueries, ABI45_0_0EXWebGLClass::WebGLQuery);
 }
 
 NATIVE_METHOD(deleteQuery) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteQueries);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteQueries);
 }
 
 NATIVE_METHOD(isQuery) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsQuery);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsQuery);
 }
 
 NATIVE_METHOD(beginQuery) {
   CTX();
   auto target = ARG(0, GLenum);
-  auto query = ARG(1, ABI47_0_0EXWebGLClass);
+  auto query = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBeginQuery(target, ctx->lookupObject(query)); });
   return nullptr;
 }
@@ -1597,12 +1597,12 @@ NATIVE_METHOD(getQuery) {
   ctx->addBlockingToNextBatch([&] { glGetQueryiv(target, pname, &params); });
   return params == 0
       ? jsi::Value::null()
-      : createWebGLObject(runtime, ABI47_0_0EXWebGLClass::WebGLQuery, {static_cast<double>(params)});
+      : createWebGLObject(runtime, ABI45_0_0EXWebGLClass::WebGLQuery, {static_cast<double>(params)});
 }
 
 NATIVE_METHOD(getQueryParameter) {
   CTX();
-  auto query = ARG(0, ABI47_0_0EXWebGLClass);
+  auto query = ARG(0, ABI45_0_0EXWebGLClass);
   auto pname = ARG(1, GLenum);
   GLuint params;
   ctx->addBlockingToNextBatch(
@@ -1615,30 +1615,30 @@ NATIVE_METHOD(getQueryParameter) {
 
 NATIVE_METHOD(createSampler) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenSamplers, ABI47_0_0EXWebGLClass::WebGLSampler);
+  return exglGenObject(ctx, runtime, glGenSamplers, ABI45_0_0EXWebGLClass::WebGLSampler);
 }
 
 NATIVE_METHOD(deleteSampler) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteSamplers);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteSamplers);
 }
 
 NATIVE_METHOD(bindSampler) {
   CTX();
   auto unit = ARG(0, GLuint);
-  auto sampler = ARG(1, ABI47_0_0EXWebGLClass);
+  auto sampler = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBindSampler(unit, ctx->lookupObject(sampler)); });
   return nullptr;
 }
 
 NATIVE_METHOD(isSampler) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsSampler);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsSampler);
 }
 
 NATIVE_METHOD(samplerParameteri) {
   CTX();
-  auto sampler = ARG(0, ABI47_0_0EXWebGLClass);
+  auto sampler = ARG(0, ABI45_0_0EXWebGLClass);
   auto pname = ARG(1, GLenum);
   auto param = ARG(2, GLfloat);
   ctx->addToNextBatch([=] { glSamplerParameteri(ctx->lookupObject(sampler), pname, param); });
@@ -1647,7 +1647,7 @@ NATIVE_METHOD(samplerParameteri) {
 
 NATIVE_METHOD(samplerParameterf) {
   CTX();
-  auto sampler = ARG(0, ABI47_0_0EXWebGLClass);
+  auto sampler = ARG(0, ABI45_0_0EXWebGLClass);
   auto pname = ARG(1, GLenum);
   auto param = ARG(2, GLfloat);
   ctx->addToNextBatch([=] { glSamplerParameterf(ctx->lookupObject(sampler), pname, param); });
@@ -1656,7 +1656,7 @@ NATIVE_METHOD(samplerParameterf) {
 
 NATIVE_METHOD(getSamplerParameter) {
   CTX();
-  auto sampler = ARG(0, ABI47_0_0EXWebGLClass);
+  auto sampler = ARG(0, ABI45_0_0EXWebGLClass);
   auto pname = ARG(1, GLenum);
   bool isFloatParam = pname == GL_TEXTURE_MAX_LOD || pname == GL_TEXTURE_MIN_LOD;
   union {
@@ -1694,23 +1694,23 @@ UNIMPL_NATIVE_METHOD(getSyncParameter)
 
 NATIVE_METHOD(createTransformFeedback) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenTransformFeedbacks, ABI47_0_0EXWebGLClass::WebGLTransformFeedback);
+  return exglGenObject(ctx, runtime, glGenTransformFeedbacks, ABI45_0_0EXWebGLClass::WebGLTransformFeedback);
 }
 
 NATIVE_METHOD(deleteTransformFeedback) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteTransformFeedbacks);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteTransformFeedbacks);
 }
 
 NATIVE_METHOD(isTransformFeedback) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsTransformFeedback);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsTransformFeedback);
 }
 
 NATIVE_METHOD(bindTransformFeedback) {
   CTX();
   auto target = ARG(0, GLenum);
-  auto transformFeedback = ARG(1, ABI47_0_0EXWebGLClass);
+  auto transformFeedback = ARG(1, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch(
       [=] { glBindTransformFeedback(target, ctx->lookupObject(transformFeedback)); });
   return nullptr;
@@ -1722,7 +1722,7 @@ SIMPLE_NATIVE_METHOD(endTransformFeedback, glEndTransformFeedback);
 
 NATIVE_METHOD(transformFeedbackVaryings) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   std::vector<std::string> varyings = jsArrayToVector<std::string>(runtime, ARG(1, jsi::Array));
   auto bufferMode = ARG(2, GLenum);
 
@@ -1747,7 +1747,7 @@ NATIVE_METHOD(getTransformFeedbackVarying) {
   return exglGetActiveInfo(
       ctx,
       runtime,
-      ARG(0, ABI47_0_0EXWebGLClass),
+      ARG(0, ABI45_0_0EXWebGLClass),
       ARG(1, GLuint),
       GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH,
       glGetTransformFeedbackVarying);
@@ -1764,7 +1764,7 @@ NATIVE_METHOD(bindBufferBase) {
   CTX();
   auto target = ARG(0, GLenum);
   auto index = ARG(1, GLuint);
-  auto buffer = ARG(2, ABI47_0_0EXWebGLClass);
+  auto buffer = ARG(2, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBindBufferBase(target, index, ctx->lookupObject(buffer)); });
   return nullptr;
 }
@@ -1773,7 +1773,7 @@ NATIVE_METHOD(bindBufferRange) {
   CTX();
   auto target = ARG(0, GLenum);
   auto index = ARG(1, GLuint);
-  auto buffer = ARG(2, ABI47_0_0EXWebGLClass);
+  auto buffer = ARG(2, ABI45_0_0EXWebGLClass);
   auto offset = ARG(3, GLint);
   auto size = ARG(4, GLsizei);
   ctx->addToNextBatch(
@@ -1783,7 +1783,7 @@ NATIVE_METHOD(bindBufferRange) {
 
 NATIVE_METHOD(getUniformIndices) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   std::vector<std::string> uniformNames = jsArrayToVector<std::string>(runtime, ARG(1, jsi::Array));
 
   std::vector<const char *> uniformNamesRaw(uniformNames.size());
@@ -1810,7 +1810,7 @@ NATIVE_METHOD(getUniformIndices) {
 
 NATIVE_METHOD(getActiveUniforms) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto uniformIndices = jsArrayToVector<GLuint>(runtime, ARG(1, jsi::Array));
   auto pname = ARG(2, GLenum);
   std::vector<GLint> params(uniformIndices.size());
@@ -1835,7 +1835,7 @@ NATIVE_METHOD(getActiveUniforms) {
 
 NATIVE_METHOD(getUniformBlockIndex) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto uniformBlockName = ARG(1, std::string);
 
   GLuint blockIndex;
@@ -1849,7 +1849,7 @@ UNIMPL_NATIVE_METHOD(getActiveUniformBlockParameter)
 
 NATIVE_METHOD(getActiveUniformBlockName) {
   CTX();
-  auto fProgram = ARG(0, ABI47_0_0EXWebGLClass);
+  auto fProgram = ARG(0, ABI45_0_0EXWebGLClass);
   auto uniformBlockIndex = ARG(1, GLuint);
 
   std::string blockName;
@@ -1865,7 +1865,7 @@ NATIVE_METHOD(getActiveUniformBlockName) {
 
 NATIVE_METHOD(uniformBlockBinding) {
   CTX();
-  auto program = ARG(0, ABI47_0_0EXWebGLClass);
+  auto program = ARG(0, ABI45_0_0EXWebGLClass);
   auto uniformBlockIndex = ARG(1, GLuint);
   auto uniformBlockBinding = ARG(2, GLuint);
   ctx->addToNextBatch([=] {
@@ -1879,22 +1879,22 @@ NATIVE_METHOD(uniformBlockBinding) {
 
 NATIVE_METHOD(createVertexArray) {
   CTX();
-  return exglGenObject(ctx, runtime, glGenVertexArrays, ABI47_0_0EXWebGLClass::WebGLVertexArrayObject);
+  return exglGenObject(ctx, runtime, glGenVertexArrays, ABI45_0_0EXWebGLClass::WebGLVertexArrayObject);
 }
 
 NATIVE_METHOD(deleteVertexArray) {
   CTX();
-  return exglDeleteObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glDeleteVertexArrays);
+  return exglDeleteObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glDeleteVertexArrays);
 }
 
 NATIVE_METHOD(isVertexArray) {
   CTX();
-  return exglIsObject(ctx, ARG(0, ABI47_0_0EXWebGLClass), glIsVertexArray);
+  return exglIsObject(ctx, ARG(0, ABI45_0_0EXWebGLClass), glIsVertexArray);
 }
 
 NATIVE_METHOD(bindVertexArray) {
   CTX();
-  auto vertexArray = ARG(0, ABI47_0_0EXWebGLClass);
+  auto vertexArray = ARG(0, ABI45_0_0EXWebGLClass);
   ctx->addToNextBatch([=] { glBindVertexArray(ctx->lookupObject(vertexArray)); });
   return nullptr;
 }
@@ -1930,7 +1930,7 @@ NATIVE_METHOD(getExtension) {
     return nullptr;
   }
 
-  if (name == "ABI47_0_0EXT_texture_filter_anisotropic") {
+  if (name == "ABI45_0_0EXT_texture_filter_anisotropic") {
     jsi::Object result(runtime);
     result.setProperty(
         runtime, "TEXTURE_MAX_ANISOTROPY_EXT", jsi::Value(GL_TEXTURE_MAX_ANISOTROPY_EXT));
@@ -1961,4 +1961,4 @@ NATIVE_METHOD(flushEXP) {
 
 } // namespace method
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

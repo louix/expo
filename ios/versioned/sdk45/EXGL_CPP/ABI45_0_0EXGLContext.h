@@ -21,11 +21,11 @@
 #include <unordered_map>
 #include <vector>
 
-#include <ABI47_0_0jsi/ABI47_0_0jsi.h>
+#include <ABI45_0_0jsi/ABI47_0_0jsi.h>
 
-#include "ABI47_0_0EXJsiUtils.h"
-#include "ABI47_0_0EXPlatformUtils.h"
-#include "ABI47_0_0EXWebGLRenderer.h"
+#include "ABI45_0_0EXJsiUtils.h"
+#include "ABI45_0_0EXPlatformUtils.h"
+#include "ABI45_0_0EXWebGLRenderer.h"
 #include "TypedArrayApi.h"
 
 // Constants in WebGL that aren't in OpenGL ES
@@ -42,15 +42,15 @@
 #define GL_DEPTH_STENCIL 0x84F9
 #define GL_DEPTH_STENCIL_ATTACHMENT 0x821A
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
-class ABI47_0_0EXGLContext {
+class ABI45_0_0EXGLContext {
   using Op = std::function<void(void)>;
   using Batch = std::vector<Op>;
 
  public:
-  ABI47_0_0EXGLContext(UEXGLContextId ctxId): ctxId(ctxId) {}
+  ABI45_0_0EXGLContext(UEXGLContextId ctxId): ctxId(ctxId) {}
   void prepareContext(jsi::Runtime &runtime, std::function<void(void)> flushMethod);
   void maybePrepareWorkletContext(jsi::Runtime &runtime, initGlesContext viewport);
 
@@ -73,7 +73,7 @@ class ABI47_0_0EXGLContext {
   // queued function to run before returning
   void addBlockingToNextBatch(Op &&op);
 
-  // [JS thread] Enqueue a function and return an ABI47_0_0EXGL object that will get mapped
+  // [JS thread] Enqueue a function and return an ABI45_0_0EXGL object that will get mapped
   // to the function's return value when it is called on the GL thread.
   //
   // We call these 'futures': a return value from a GL method call that is simply
@@ -136,4 +136,4 @@ class ABI47_0_0EXGLContext {
 };
 
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

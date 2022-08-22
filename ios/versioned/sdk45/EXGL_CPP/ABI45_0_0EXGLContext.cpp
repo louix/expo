@@ -1,12 +1,12 @@
-#include "ABI47_0_0EXGLContext.h"
-#include "ABI47_0_0EXPlatformUtils.h"
+#include "ABI45_0_0EXGLContext.h"
+#include "ABI45_0_0EXPlatformUtils.h"
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
 constexpr const char *OnJSRuntimeDestroyPropertyName = "__EXGLOnJsRuntimeDestroy";
 
-void ABI47_0_0EXGLContext::prepareContext(jsi::Runtime &runtime, std::function<void(void)> flushMethod) {
+void ABI45_0_0EXGLContext::prepareContext(jsi::Runtime &runtime, std::function<void(void)> flushMethod) {
   this->flushOnGLThread = flushMethod;
   try {
     auto viewport = prepareOpenGLESContext();
@@ -15,11 +15,11 @@ void ABI47_0_0EXGLContext::prepareContext(jsi::Runtime &runtime, std::function<v
 
     maybePrepareWorkletContext(runtime, viewport);
   } catch (const std::runtime_error &err) {
-    ABI47_0_0EXGLSysLog("Failed to setup ABI47_0_0EXGLContext [%s]", err.what());
+    ABI45_0_0EXGLSysLog("Failed to setup ABI47_0_0EXGLContext [%s]", err.what());
   }
 }
 
-void ABI47_0_0EXGLContext::maybePrepareWorkletContext(jsi::Runtime &runtime, initGlesContext viewport) {
+void ABI45_0_0EXGLContext::maybePrepareWorkletContext(jsi::Runtime &runtime, initGlesContext viewport) {
   jsi::Value workletRuntimeValue = runtime.global().getProperty(runtime, "_WORKLET_RUNTIME");
   if (!workletRuntimeValue.isObject()) {
     return;
@@ -44,7 +44,7 @@ void ABI47_0_0EXGLContext::maybePrepareWorkletContext(jsi::Runtime &runtime, ini
   tryRegisterOnJSRuntimeDestroy(workletRuntime);
 }
 
-void ABI47_0_0EXGLContext::endNextBatch() noexcept {
+void ABI45_0_0EXGLContext::endNextBatch() noexcept {
   std::lock_guard<std::mutex> lock(backlogMutex);
   backlog.push_back(std::move(nextBatch));
   nextBatch = std::vector<Op>();
@@ -53,13 +53,13 @@ void ABI47_0_0EXGLContext::endNextBatch() noexcept {
 
 // [JS thread] Add an Op to the 'next' batch -- the arguments are any form of
 // constructor arguments for Op
-void ABI47_0_0EXGLContext::addToNextBatch(Op &&op) noexcept {
+void ABI45_0_0EXGLContext::addToNextBatch(Op &&op) noexcept {
   nextBatch.push_back(std::move(op));
 }
 
 // [JS thread] Add a blocking operation to the 'next' batch -- waits for the
 // queued function to run before returning
-void ABI47_0_0EXGLContext::addBlockingToNextBatch(Op &&op) {
+void ABI45_0_0EXGLContext::addBlockingToNextBatch(Op &&op) {
   std::packaged_task<void(void)> task(std::move(op));
   auto future = task.get_future();
   addToNextBatch([&] { task(); });
@@ -68,9 +68,9 @@ void ABI47_0_0EXGLContext::addBlockingToNextBatch(Op &&op) {
   future.wait();
 }
 
-// [JS thread] Enqueue a function and return an ABI47_0_0EXGL object that will get mapped
+// [JS thread] Enqueue a function and return an ABI45_0_0EXGL object that will get mapped
 // to the function's return value when it is called on the GL thread.
-jsi::Value ABI47_0_0EXGLContext::addFutureToNextBatch(
+jsi::Value ABI45_0_0EXGLContext::addFutureToNextBatch(
     jsi::Runtime &runtime,
     std::function<unsigned int(void)> &&op) noexcept {
   auto exglObjId = createObject();
@@ -82,7 +82,7 @@ jsi::Value ABI47_0_0EXGLContext::addFutureToNextBatch(
 }
 
 // [GL thread] Do all the remaining work we can do on the GL thread
-void ABI47_0_0EXGLContext::flush(void) {
+void ABI45_0_0EXGLContext::flush(void) {
   // Keep a copy and clear backlog to minimize lock time
   std::vector<Batch> copy;
   {
@@ -96,24 +96,24 @@ void ABI47_0_0EXGLContext::flush(void) {
   }
 }
 
-UEXGLObjectId ABI47_0_0EXGLContext::createObject(void) noexcept {
+UEXGLObjectId ABI45_0_0EXGLContext::createObject(void) noexcept {
   return nextObjectId++;
 }
 
-void ABI47_0_0EXGLContext::destroyObject(UEXGLObjectId exglObjId) noexcept {
+void ABI45_0_0EXGLContext::destroyObject(UEXGLObjectId exglObjId) noexcept {
   objects.erase(exglObjId);
 }
 
-void ABI47_0_0EXGLContext::mapObject(UEXGLObjectId exglObjId, GLuint glObj) noexcept {
+void ABI45_0_0EXGLContext::mapObject(UEXGLObjectId exglObjId, GLuint glObj) noexcept {
   objects[exglObjId] = glObj;
 }
 
-GLuint ABI47_0_0EXGLContext::lookupObject(UEXGLObjectId exglObjId) noexcept {
+GLuint ABI45_0_0EXGLContext::lookupObject(UEXGLObjectId exglObjId) noexcept {
   auto iter = objects.find(exglObjId);
   return iter == objects.end() ? 0 : iter->second;
 }
 
-void ABI47_0_0EXGLContext::tryRegisterOnJSRuntimeDestroy(jsi::Runtime &runtime) {
+void ABI45_0_0EXGLContext::tryRegisterOnJSRuntimeDestroy(jsi::Runtime &runtime) {
   auto global = runtime.global();
 
   if (global.getProperty(runtime, OnJSRuntimeDestroyPropertyName).isObject()) {
@@ -129,7 +129,7 @@ void ABI47_0_0EXGLContext::tryRegisterOnJSRuntimeDestroy(jsi::Runtime &runtime) 
           runtime, std::make_shared<InvalidateCacheOnDestroy>(runtime)));
 }
 
-initGlesContext ABI47_0_0EXGLContext::prepareOpenGLESContext() {
+initGlesContext ABI45_0_0EXGLContext::prepareOpenGLESContext() {
   initGlesContext result;
   // Clear everything to initial values
   addBlockingToNextBatch([&] {
@@ -163,7 +163,7 @@ initGlesContext ABI47_0_0EXGLContext::prepareOpenGLESContext() {
   return result;
 }
 
-void ABI47_0_0EXGLContext::maybeReadAndCacheSupportedExtensions() {
+void ABI45_0_0EXGLContext::maybeReadAndCacheSupportedExtensions() {
   if (supportedExtensions.size() == 0) {
     addBlockingToNextBatch([&] {
       GLint numExtensions = 0;
@@ -199,4 +199,4 @@ void ABI47_0_0EXGLContext::maybeReadAndCacheSupportedExtensions() {
 }
 
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

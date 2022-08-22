@@ -10,14 +10,14 @@
 #include <OpenGLES/ES3/glext.h>
 #endif
 
-#include <ABI47_0_0jsi/ABI47_0_0jsi.h>
+#include <ABI45_0_0jsi/ABI47_0_0jsi.h>
 #include <type_traits>
 
-#include "ABI47_0_0EXJsiUtils.h"
-#include "ABI47_0_0EXWebGLRenderer.h"
+#include "ABI45_0_0EXJsiUtils.h"
+#include "ABI45_0_0EXWebGLRenderer.h"
 #include "TypedArrayApi.h"
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
 //
@@ -42,9 +42,9 @@ template <typename T>
 inline constexpr bool is_supported_vector = std::is_same_v<std::vector<uint32_t>, T> ||
     std::is_same_v<std::vector<int32_t>, T> || std::is_same_v<std::vector<float>, T>;
 
-// if T = ABI47_0_0EXWebGLClass then return_type = UEXGLObjectId else return_type = T
+// if T = ABI45_0_0EXWebGLClass then return_type = UEXGLObjectId else return_type = T
 template <typename T>
-using type_map = typename std::conditional<std::is_same_v<ABI47_0_0EXWebGLClass, T>, UEXGLObjectId, T>::type;
+using type_map = typename std::conditional<std::is_same_v<ABI45_0_0EXWebGLClass, T>, UEXGLObjectId, T>::type;
 
 template <typename T>
 inline std::enable_if_t<
@@ -121,7 +121,7 @@ inline jsi::ArrayBuffer unpackArg<jsi::ArrayBuffer>(
 }
 
 template <>
-inline UEXGLObjectId unpackArg<ABI47_0_0EXWebGLClass>(jsi::Runtime &runtime, const jsi::Value *jsArgv) {
+inline UEXGLObjectId unpackArg<ABI45_0_0EXWebGLClass>(jsi::Runtime &runtime, const jsi::Value *jsArgv) {
   if (!jsArgv->isObject() || !jsArgv->asObject(runtime).hasProperty(runtime, "id")) {
     return 0;
   }
@@ -233,12 +233,12 @@ auto generateNativeMethodBind(F fn, Tuple &&tuple, std::index_sequence<I...>) {
 //
 // e.g. usage
 // auto [ arg1, arg2, arg3 ] = unpackArgs<int, string, js::Object>(runtime, jsArgv, argc)
-// used in ABI47_0_0EXGLNativeMethods wrapped in ARGS macro
+// used in ABI45_0_0EXGLNativeMethods wrapped in ARGS macro
 //
 template <typename... T>
 inline std::tuple<T...> unpackArgs(jsi::Runtime &runtime, const jsi::Value *jsArgv, size_t argc) {
   if (argc < sizeof...(T)) {
-    throw std::runtime_error("ABI47_0_0EXGL: Too few arguments");
+    throw std::runtime_error("ABI45_0_0EXGL: Too few arguments");
   }
   // create tuple of Arg<T> structs containg pointer to unprocessed arguments
   auto argTuple = methodHelper::toArgTuple<T...>(jsArgv);
@@ -262,7 +262,7 @@ inline std::tuple<> unpackArgs(jsi::Runtime &, const jsi::Value *, size_t) {
 //   addToNextBatch(generateNativeMethod(runtime, glScissor, jsArgv, argc));
 //   return nullptr;
 // }
-// used in ABI47_0_0EXGLNativeMethods wrapped in SIMPLE_NATIVE_METHOD macro
+// used in ABI45_0_0EXGLNativeMethods wrapped in SIMPLE_NATIVE_METHOD macro
 //
 template <typename... T>
 auto generateNativeMethod(
@@ -278,4 +278,4 @@ auto generateNativeMethod(
       fn, std::move(argTuple), std::make_index_sequence<sizeof...(T)>());
 }
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

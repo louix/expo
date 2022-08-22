@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
 template <TypedArrayKind T>
@@ -305,4 +305,4 @@ template class TypedArray<TypedArrayKind::Float32Array>;
 template class TypedArray<TypedArrayKind::Float64Array>;
 
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

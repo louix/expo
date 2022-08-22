@@ -1,9 +1,9 @@
 #pragma once
 
-#include <ABI47_0_0jsi/ABI47_0_0jsi.h>
+#include <ABI45_0_0jsi/ABI47_0_0jsi.h>
 
-namespace jsi = ABI47_0_0facebook::jsi;
-namespace ABI47_0_0expo {
+namespace jsi = ABI45_0_0facebook::jsi;
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
 enum class TypedArrayKind {
@@ -167,4 +167,4 @@ TypedArray<T> TypedArrayBase::as(jsi::Runtime &runtime) && {
   return std::move(*this).get<T>(runtime);
 }
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

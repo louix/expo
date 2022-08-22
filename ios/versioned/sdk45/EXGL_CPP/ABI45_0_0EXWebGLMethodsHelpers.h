@@ -1,8 +1,8 @@
 #pragma once
-// it should be included only in ABI47_0_0EXWebGLMethods.cpp
+// it should be included only in ABI45_0_0EXWebGLMethods.cpp
 
-#include "ABI47_0_0EXGLContext.h"
-#include "ABI47_0_0EXWebGLRenderer.h"
+#include "ABI45_0_0EXGLContext.h"
+#include "ABI45_0_0EXWebGLRenderer.h"
 
 #ifdef __ANDROID__
 #include <GLES3/gl3.h>
@@ -14,12 +14,12 @@
 #include <OpenGLES/ES3/glext.h>
 #endif
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
 template <typename Func>
 inline jsi::Value exglGetActiveInfo(
-    ABI47_0_0EXGLContext *ctx,
+    ABI45_0_0EXGLContext *ctx,
     jsi::Runtime &runtime,
     UEXGLObjectId fProgram,
     GLuint index,
@@ -49,7 +49,7 @@ inline jsi::Value exglGetActiveInfo(
   }
 
   jsi::Object jsResult =
-      createWebGLObject(runtime, ABI47_0_0EXWebGLClass::WebGLActiveInfo, {}).asObject(runtime);
+      createWebGLObject(runtime, ABI45_0_0EXWebGLClass::WebGLActiveInfo, {}).asObject(runtime);
   jsResult.setProperty(runtime, "name", jsi::String::createFromUtf8(runtime, name));
   jsResult.setProperty(runtime, "size", size);
   jsResult.setProperty(runtime, "type", static_cast<double>(type));
@@ -57,7 +57,7 @@ inline jsi::Value exglGetActiveInfo(
 }
 
 template <typename Func, typename... T>
-inline jsi::Value exglCall(ABI47_0_0EXGLContext *ctx, Func func, T &&... args) {
+inline jsi::Value exglCall(ABI45_0_0EXGLContext *ctx, Func func, T &&... args) {
   ctx->addToNextBatch([=, args = std::make_tuple(std::forward<T>(args)...)] {
     return std::apply(func, std::move(args));
   });
@@ -65,7 +65,7 @@ inline jsi::Value exglCall(ABI47_0_0EXGLContext *ctx, Func func, T &&... args) {
 
 template <typename Func, typename T>
 inline jsi::Value
-exglUniformv(ABI47_0_0EXGLContext *ctx, Func func, GLuint uniform, size_t dim, std::vector<T> &&data) {
+exglUniformv(ABI45_0_0EXGLContext *ctx, Func func, GLuint uniform, size_t dim, std::vector<T> &&data) {
   ctx->addToNextBatch([=, data{std::move(data)}] {
     func(uniform, static_cast<int>(data.size() / dim), data.data());
   });
@@ -74,7 +74,7 @@ exglUniformv(ABI47_0_0EXGLContext *ctx, Func func, GLuint uniform, size_t dim, s
 
 template <typename Func, typename T>
 inline jsi::Value exglUniformMatrixv(
-    ABI47_0_0EXGLContext *ctx,
+    ABI45_0_0EXGLContext *ctx,
     Func func,
     GLuint uniform,
     GLboolean transpose,
@@ -88,23 +88,23 @@ inline jsi::Value exglUniformMatrixv(
 
 template <typename Func, typename T>
 inline jsi::Value
-exglVertexAttribv(ABI47_0_0EXGLContext *ctx, Func func, GLuint index, std::vector<T> &&data) {
+exglVertexAttribv(ABI45_0_0EXGLContext *ctx, Func func, GLuint index, std::vector<T> &&data) {
   ctx->addToNextBatch([=, data{std::move(data)}] { func(index, data.data()); });
   return nullptr;
 }
 
 inline jsi::Value
-exglIsObject(ABI47_0_0EXGLContext *ctx, UEXGLObjectId id, std::function<GLboolean(GLuint)> func) {
+exglIsObject(ABI45_0_0EXGLContext *ctx, UEXGLObjectId id, std::function<GLboolean(GLuint)> func) {
   GLboolean glResult;
   ctx->addBlockingToNextBatch([&] { glResult = func(ctx->lookupObject(id)); });
   return glResult == GL_TRUE;
 }
 
 inline jsi::Value exglGenObject(
-    ABI47_0_0EXGLContext *ctx,
+    ABI45_0_0EXGLContext *ctx,
     jsi::Runtime &runtime,
     std::function<void(GLsizei, UEXGLObjectId *)> func,
-    ABI47_0_0EXWebGLClass webglClass) {
+    ABI45_0_0EXWebGLClass webglClass) {
   auto id = ctx->addFutureToNextBatch(runtime, [=] {
     GLuint buffer;
     func(1, &buffer);
@@ -114,22 +114,22 @@ inline jsi::Value exglGenObject(
 }
 
 inline jsi::Value exglCreateObject(
-    ABI47_0_0EXGLContext *ctx,
+    ABI45_0_0EXGLContext *ctx,
     jsi::Runtime &runtime,
     std::function<GLuint()> func,
-    ABI47_0_0EXWebGLClass webglClass) {
+    ABI45_0_0EXWebGLClass webglClass) {
   auto id = ctx->addFutureToNextBatch(runtime, [=] { return func(); });
   return createWebGLObject(runtime, webglClass, {std::move(id)});
 }
 
 inline jsi::Value
-exglDeleteObject(ABI47_0_0EXGLContext *ctx, UEXGLObjectId id, std::function<void(UEXGLObjectId)> func) {
+exglDeleteObject(ABI45_0_0EXGLContext *ctx, UEXGLObjectId id, std::function<void(UEXGLObjectId)> func) {
   ctx->addToNextBatch([=] { func(ctx->lookupObject(id)); });
   return nullptr;
 }
 
 inline jsi::Value exglDeleteObject(
-    ABI47_0_0EXGLContext *ctx,
+    ABI45_0_0EXGLContext *ctx,
     UEXGLObjectId id,
     std::function<void(GLsizei, const UEXGLObjectId *)> func) {
   ctx->addToNextBatch([=] {
@@ -140,8 +140,8 @@ inline jsi::Value exglDeleteObject(
 }
 
 inline jsi::Value exglUnimplemented(std::string name) {
-  throw std::runtime_error("ABI47_0_0EXGL: " + name + "() isn't implemented yet!");
+  throw std::runtime_error("ABI45_0_0EXGL: " + name + "() isn't implemented yet!");
 }
 
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

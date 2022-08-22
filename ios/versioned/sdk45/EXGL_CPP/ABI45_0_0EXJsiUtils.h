@@ -1,14 +1,14 @@
 #pragma once
 
-#include <ABI47_0_0jsi/ABI47_0_0jsi.h>
+#include <ABI45_0_0jsi/ABI47_0_0jsi.h>
 #include <vector>
 
-#include "ABI47_0_0EXPlatformUtils.h"
+#include "ABI45_0_0EXPlatformUtils.h"
 #include "TypedArrayApi.h"
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
-namespace jsi = ABI47_0_0facebook::jsi;
+namespace jsi = ABI45_0_0facebook::jsi;
 
 template <typename T>
 inline std::vector<T> jsArrayToVector(jsi::Runtime &runtime, const jsi::Array &jsArray) {
@@ -75,8 +75,8 @@ inline jsi::Value unsupportedWebGL2(
     const jsi::Value &jsThis,
     const jsi::Value *jsArgv,
     size_t argc) {
-  throw std::runtime_error("ABI47_0_0EXGL: This device doesn't support WebGL2 method: " + name + "()!");
+  throw std::runtime_error("ABI45_0_0EXGL: This device doesn't support WebGL2 method: " + name + "()!");
 }
 
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo

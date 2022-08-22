@@ -1,11 +1,11 @@
 #import <Foundation/Foundation.h>
 
-#include <ABI47_0_0EXGL_CPP/ABI47_0_0EXPlatformUtils.h>
+#include <ABI45_0_0EXGL_CPP/ABI47_0_0EXPlatformUtils.h>
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
-void ABI47_0_0EXiOSLog(const char *msg, ...) {
+void ABI45_0_0EXiOSLog(const char *msg, ...) {
   va_list args;
   va_start(args, msg);
   NSLog(@"%@", [[NSString alloc] initWithFormat:[NSString stringWithUTF8String:msg]
@@ -13,9 +13,9 @@ void ABI47_0_0EXiOSLog(const char *msg, ...) {
   va_end(args);
 }
 
-ABI47_0_0EXiOSOperatingSystemVersion ABI47_0_0EXiOSGetOperatingSystemVersion() {
+ABI45_0_0EXiOSOperatingSystemVersion ABI47_0_0EXiOSGetOperatingSystemVersion() {
   NSOperatingSystemVersion version = NSProcessInfo.processInfo.operatingSystemVersion;
-  return ABI47_0_0EXiOSOperatingSystemVersion {
+  return ABI45_0_0EXiOSOperatingSystemVersion {
     version.majorVersion,
     version.minorVersion,
     version.patchVersion,

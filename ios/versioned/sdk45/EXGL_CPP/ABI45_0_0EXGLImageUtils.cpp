@@ -1,11 +1,11 @@
-#include "ABI47_0_0EXGLImageUtils.h"
+#include "ABI45_0_0EXGLImageUtils.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-namespace jsi = ABI47_0_0facebook::jsi;
+namespace jsi = ABI45_0_0facebook::jsi;
 
-namespace ABI47_0_0expo {
+namespace ABI45_0_0expo {
 namespace gl_cpp {
 
 GLuint bytesPerPixel(GLenum type, GLenum format) {
@@ -136,4 +136,4 @@ std::shared_ptr<uint8_t> loadImage(
   return std::shared_ptr<uint8_t>(nullptr);
 }
 } // namespace gl_cpp
-} // namespace ABI47_0_0expo
+} // namespace ABI45_0_0expo
