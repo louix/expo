@@ -78,12 +78,6 @@ export function expoModulesTransforms(prefix: string): FileTransforms {
         replaceWith: `#import "${prefix}$1$2-Swift.h"`,
       },
       {
-        // Unprefix imports to unversionable (e.g. expo-gl-cpp) modules.
-        paths: [objcFilesPattern, 'EXGL'],
-        find: new RegExp(`#import <${prefix}(EXGL_CPP)\\b`),
-        replaceWith: '#import <$1',
-      },
-      {
         paths: objcFilesPattern,
         find: /@import (Expo|EX|EAS)(\w+)/g,
         replaceWith: `@import ${prefix}$1$2`,
